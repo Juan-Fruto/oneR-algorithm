@@ -1,0 +1,96 @@
+<h3 style="text-align:center">Cuestionamiento básico previo a la práctica</h3><br/>
+
+**¿Qué tipos de problemas de ingeniería resuelve el algoritmo 1R?**
+<p>De acuerdo a los tipos de probelamas de ingniería vistos en aprendizaje máquina: clasificación y predicción</p>
+**¿En qué forma presenta los resultados el algoritmo 1R?**
+<p>En conjunto de reglas sobre el atributo más determinante para evaluar el atributo etiquetado del dataset de entrenamiento</p>
+<h3 style="text-align:center">Desarrollo</h3><br/>
+<p>**1.- Ingresa al entorno de desarrollo de R.**</p>
+<p>**2.- Ahora debes indicar a R que usarás el paquete OneR para poder generar modelos de
+reglas de inferencia, para eso teclea:**</p>
+install.packages('OneR', repos='http://cran.us.r-project.org')
+Una vez que instalas ese paquete, debes indicar que, de todas las bibliotecas que
+contiene el paquete OneR, utilizarás alguna de ellas. Como en esta práctica usarás la
+biblioteca OneR, entonces debes teclear.</h2>
+```{r}
+library("OneR")
+library("readxl")
+```
+<p>**3. Para realizar este ejemplo, utilizaremos un data set llamado Iris. Este data set quizá es
+uno de los más conocidos para analizar algoritmos de reconocimiento de patrones.
+Contiene tres clases de 50 instancias cada una, cada clase se refiere a una planta de iris
+[1]. La información de los atributos de ese data set es [3]:**</p>
+1. sepal length in cm
+2. sepal width in cm
+3. petal length in cm
+4. petal width in cm
+5. class:
+--Iris Setosa
+--Iris Versicolour
+--Iris Virginica
+<p>Al instalar la biblioteca OneR tienes acceso al data set Iris. Para abrirlo usa la función
+optbin de la siguiente forma:</p>
+```{r}
+datos <- optbin(iris)
+```
+<p>**4. Con la función anterior ya tienes en memoria el data set Iris, el cual se accede
+mediante la lista datos. Ahora debes crear el modelo de reglas, así que debes usar la
+función OneR.**</p>
+```{r}
+modelo <- OneR(datos, verbose = TRUE)
+```
+<p>Con la ejecución de la función anterior deberás ver en pantalla el modelo de reglas de
+inferencia, creado en la variable modelo (ver figura 1). Con el atributo verbose = TRUE se
+imprime la precisión de predicción de los atributos en orden descendente. En la figura 1
+puede observarse el nivel de precisión con el que se generaron las reglas que explican el
+modelo.</p>
+<img src="C:/Users/juan_/OneDrive - Universidad de Colima/Escritorio/6to/practica 5 clasificación/src/img/figure1.png"/>
+<p>Figura 1. Resultado de la aplicación de la función OneR.</p>
+<p>**5. Para poder observar las reglas en forma explícita, debes mostrar el modelo generado,
+así que tienes que utilizar la función summary:**<p>
+```{r}
+summary(modelo)
+```
+<p>Con el uso de la función summary puedes observar en forma explícita las reglas
+generadas (ver figura 2). Como puede revisarse, si el ancho del pétalo de una flor iris
+está en el rango desde 0.0976 hasta 0.791 cm., la especie es setosa. La segunda regla,
+por otra parte, indica que si el ancho del pétalo de una iris está en el rango desde 0.791
+hasta 1.63 cm., entonces la especie de la flor iris es versicolor.</p>
+<img src="C:/Users/juan_/OneDrive - Universidad de Colima/Escritorio/6to/practica 5 clasificación/src/img/figure2.png"/>
+<p>Figura 2. Reglas generadas con el algoritmo 1R aplicado al data set Iris.</p>
+
+<p>**6. Para concluir, toma en cuenta el data set con información de inflamaciones agudas
+(Acute Inflammations) provisto en clase (archivo “diagnosis_data.xlsx”). En este se
+presenta información que permite concluir con un diagnóstico de dos posibles tipos de
+enfermedades del sistema urinario: inflamación de la vejiga urinaria (inflammation of
+urinary bladder), y nefritis de origen pelvis renal (nephritis of renal pelvis origin) [4].
+La descripción de los campos del data set es [idem]:**</p>
+<img src="C:/Users/juan_/OneDrive - Universidad de Colima/Escritorio/6to/practica 5 clasificación/src/img/table.png"/>
+<p>**6.1 Importa el data set diagnosis_data.xlsx a R, provisto con la guía de práctica.**</p>
+```{r}
+dataSet <- read_excel("C:/Users/juan_/OneDrive - Universidad de Colima/Escritorio/6to/practica 5 clasificación/src/diagnosis_data.xlsx")
+```
+<p>**6.2 Determina, mediante el algoritmo 1R, las reglas necesarias para diagnosticar
+si una persona tiene inflamación de la vejiga urinaria, o bien, nefritis de origen pelvis
+renal.**</p>
+```{r}
+dataFrame <- data.frame(dataSet)
+data <- optbin(dataFrame)
+
+#rules for Nephritis of renal pelvis origin
+model <- OneR(data, verbose = TRUE)
+summary(model)
+```
+```{r}
+#rules for Inflammation of urinary bladder
+data2 <- subset(data, select = - ncol(data))
+model2 <- OneR(data2, verbose = TRUE)
+summary(model2)
+```
+<h3 style="text-align:center">Observaciones y conclusiones</h3><br/>
+<p>OneR es un algoritmo muy sencillo de usar e interpretar sus resultados, sin embargo, noté que en los parámetros no se puede saber mediante sintaxis bajo que columna se clasifica el data frame, por lo que tuve que buscar en la documetación oficial, donde se menciona que la última columna es la que será evaluda.  También pude leer en dicha documentación que este algoritmo no logra generalizar bien las reglas (overfiting) cuando hay columnas con una gran variedad de valores categóricos, como nombres.</p>
+
+<p>**1. Considera la información de la figura 2. De acuerdo a los datos de la misma
+figura, con base en el atributo ancho del pétalo, ¿cuándo una iris será de la
+especie virginica?**</p>
+<p>cuando el anchor del pétalo es mayor a 1.63 y es menor o igual a 2.5</p>
